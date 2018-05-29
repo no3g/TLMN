@@ -36,9 +36,11 @@ namespace Server
                 counter++;
                 
             }
-            for (int i=0; i < clients.Count; i++) Game.addPlayer();
+            
             while (true)
             {
+                Game.reset();
+                for (int i = 0; i < clients.Count; i++) Game.addPlayer();
                 Game.deal();
                 Game.playing = Game.rank1;
                 Game.Status = 1;
@@ -48,6 +50,12 @@ namespace Server
                     UserThread.Start();
                 }
                 while (Game.Status != -1) {}
+                foreach (Socket client in clients)
+                {
+                    string str = "Rank: " + Game.arrPlayers[clients.IndexOf(client)].getRank().ToString();
+                    client.Send(Encoding.ASCII.GetBytes(str), 0, (str).Length, SocketFlags.None);
+                }
+                Thread.Sleep(10000);
             }
             
         }

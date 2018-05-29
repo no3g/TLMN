@@ -10,7 +10,7 @@ namespace Server
     {
         private int numOfCard = 0;
         private bool Activated = true;
-        private int Rank = 0;
+        private int Rank = 4;
         private List<ClsCard> arrCards = new List<ClsCard>();
         public bool getAct()
         {
@@ -31,6 +31,14 @@ namespace Server
         public List<ClsCard> getarrCards()
         {
             return arrCards;
+        }
+        public void setRank(int x)
+        {
+            Rank = x;
+        }
+        public int getRank()
+        {
+            return Rank;
         }
     }
 }

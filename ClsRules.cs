@@ -45,7 +45,7 @@ namespace Server
         }
         public static bool IsOrder(List<ClsCard> Card)
         {
-            if (Card.Count < 3) return false;
+            if (Card.Count < 3 || Card[Card.Count - 1].value == 13) return false;
             for (int i = 0; i < Card.Count - 1; i++)
                 if (Card[i].getvalue() != Card[i + 1].getvalue() - 1) return false;
             return true;
@@ -55,13 +55,23 @@ namespace Server
             if (Card.Count == 1 || isDouble(Card) || Is3Equal(Card) || Is4Equal(Card) || IsOrder(Card)) return true;
             return false;
         }
+        public static int IsDoubleOrder(List<ClsCard> Card)
+        {
+            if (Card.Count < 6 || Card.Count % 2 == 1 || Card[Card.Count - 1].value == 13) return -1;
+            for (int i = 0; i < Card.Count / 2 - 2; i++)
+                if (Card[2 * i].getvalue() != Card[2 * i + 2].getvalue() - 1) return -1;
+            for (int i = 0; i < Card.Count / 2 - 1; i++)
+                if (Card[i * 2].value != Card[i * 2 + 1].value) return -1;
+            return Card.Count / 2;
+        }
         public static bool IsWin(List<ClsCard> Card1, List<ClsCard> Card2)
         {
             sort(Card1);
             sort(Card2);
-            if ((Card1.Count==0)&&(isDouble(Card2)||Is3Equal(Card2)||Is4Equal(Card2)||IsOrder(Card2))) return true;
+            if ((Card1.Count==0)&&(isDouble(Card2)||Is3Equal(Card2)||Is4Equal(Card2)||IsOrder(Card2)||IsDoubleOrder(Card2) != -1)) return true;
             if (isDouble(Card1))
             {
+                if (Card1[0].value == 13 && (Is4Equal(Card2) || IsDoubleOrder(Card2) == 4)) return true;
                 if (!isDouble(Card2)) return false;
                 if (Card2[1] < Card1[1]) return false;
                 return true;
@@ -74,6 +84,7 @@ namespace Server
             }
             if (Is4Equal(Card1))
             {
+                if (Card1[0].value != 13 && IsDoubleOrder(Card2) == 4) return true;
                 if (!Is4Equal(Card2)) return false;
                 if (Card2[3] < Card1[3]) return false;
                 return true;
@@ -81,7 +92,20 @@ namespace Server
             if (IsOrder(Card1))
             {
                 if (!IsOrder(Card2)||Card1.Count!=Card2.Count) return false;
-                if (Card2[Card2.Count] < Card1[Card1.Count]) return false;
+                if (Card2[Card2.Count - 1] < Card1[Card1.Count - 1]) return false;
+                return true;
+            }
+            if (IsDoubleOrder(Card1) == 3)
+            {
+                if (IsDoubleOrder(Card2) == 4) return true;
+                if (IsDoubleOrder(Card2) != 3) return false;
+                if (Card2[5] < Card1[5]) return false;
+                return true;
+            }
+            if (IsDoubleOrder(Card1) == 4)
+            {
+                if (IsDoubleOrder(Card2) != 4) return false;
+                if (Card2[7] < Card1[7]) return false;
                 return true;
             }
             if (Card1.Count == 1 && Card2.Count == 1 && isSingleCardWin(Card1[0], Card2[0])) return true;

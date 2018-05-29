@@ -29,8 +29,11 @@ namespace Server
                 arrPlayers[i % numOfPlayers].getarrCards().Add(Card);
                 T.RemoveAt(j);
             }
-            for (int i = 0; i < numOfPlayers; i++) 
+            for (int i = 0; i < numOfPlayers; i++)
+            {
+                ClsRules.sort(arrPlayers[i].getarrCards());
                 arrPlayers[i].setnumOfCard(13);
+            }
 
         }
         public void nextplayer()
@@ -57,7 +60,11 @@ namespace Server
                     Player.getarrCards().RemoveAll(a => a.value == i.value && a.character == i.character);
                 }
                 Player.setnumOfCard(Player.getnumOfCard() - SelectedCard.Count);
-                if (Player.getnumOfCard() == 0) CountOf0++;
+                if (Player.getnumOfCard() == 0)
+                {
+                    CountOf0++;
+                    Player.setRank(CountOf0);
+                }
                 if (Player.getnumOfCard() == 0 && CountOf0 == 1) rank1 = playing;
                 JustPlayer = playing;
                 JustPlayCard = SelectedCard;
@@ -75,6 +82,11 @@ namespace Server
             arrPlayers.Add(a);
             numOfPlayers++;
 
+        }
+        public void reset()
+        {
+            numOfPlayers = 0;
+            arrPlayers = new List<ClsHandCard>();
         }
     }
 }
