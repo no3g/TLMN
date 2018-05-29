@@ -14,8 +14,9 @@ namespace Server
         public int JustPlayer = -1;
         public int playing = 0;
         public List<ClsCard> JustPlayCard = new List<ClsCard>();
-        private int avtivatingPlayer = -1;
+        public int rank1 = 0;
         public ClsRules rule;
+        public int CountOf0 = 0;
         public void deal()
         {
             List<int> T= new List<int>();
@@ -56,6 +57,8 @@ namespace Server
                     Player.getarrCards().RemoveAll(a => a.value == i.value && a.character == i.character);
                 }
                 Player.setnumOfCard(Player.getnumOfCard() - SelectedCard.Count);
+                if (Player.getnumOfCard() == 0) CountOf0++;
+                if (Player.getnumOfCard() == 0 && CountOf0 == 1) rank1 = playing;
                 JustPlayer = playing;
                 JustPlayCard = SelectedCard;
                 return true;

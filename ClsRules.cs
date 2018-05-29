@@ -11,7 +11,7 @@ namespace Server
         public static void sort(List<ClsCard> Card)
         {
             for (int i=0; i<Card.Count-1; i++)
-                for (int j=i+1; i<Card.Count; i++)
+                for (int j=i+1; j<Card.Count; j++)
                     if (Card[j]<Card[i])
                     {
                         ClsCard t= new ClsCard(0,0);
@@ -47,12 +47,12 @@ namespace Server
         {
             if (Card.Count < 3) return false;
             for (int i = 0; i < Card.Count - 1; i++)
-                if (Card[i].getvalue() < Card[i + 1].getvalue()) return false;
+                if (Card[i].getvalue() != Card[i + 1].getvalue() - 1) return false;
             return true;
         }
         public static bool isTrue(List<ClsCard> Card)
         {
-            if (Card.Count == 1 || isDouble(Card) || Is3Equal(Card) || Is4Equal(Card)) return true;
+            if (Card.Count == 1 || isDouble(Card) || Is3Equal(Card) || Is4Equal(Card) || IsOrder(Card)) return true;
             return false;
         }
         public static bool IsWin(List<ClsCard> Card1, List<ClsCard> Card2)

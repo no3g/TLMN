@@ -27,7 +27,7 @@ namespace Server
             List<Socket> clients= new List<Socket>();
             int counter = 0;
             Program p = new Program();
-            while (counter<3)
+            while (counter<2)
             {
                 ClientSocket = ServerListener.Accept();
                 clients.Add(ClientSocket);
@@ -37,12 +37,17 @@ namespace Server
                 
             }
             for (int i=0; i < clients.Count; i++) Game.addPlayer();
-            Game.deal();
-            Game.Status = 1;
-            foreach (Socket client in clients) 
+            while (true)
             {
-                Thread UserThread = new Thread(()=>User(client, clients.IndexOf(client)));
-                UserThread.Start();
+                Game.deal();
+                Game.playing = Game.rank1;
+                Game.Status = 1;
+                foreach (Socket client in clients)
+                {
+                    Thread UserThread = new Thread(() => User(client, clients.IndexOf(client)));
+                    UserThread.Start();
+                }
+                while (Game.Status != -1) {}
             }
             
         }
@@ -53,7 +58,7 @@ namespace Server
                 while (Game.Status == 1)
                 {
                     key++;
-                    while (key < 3) { }
+                    while (key < Game.arrPlayers.Count) { }
                     
                     Game.Status = 0;
                     string msg = Game.arrPlayers[ID].getnumOfCard().ToString() + " ";
@@ -86,7 +91,8 @@ namespace Server
                         }
                         else Game.ignore(Game.arrPlayers[ID]);
                         if (k) Game.nextplayer();
-                        Game.Status = 1;
+                        if (Game.CountOf0 == Game.arrPlayers.Count - 1) Game.Status = -1;
+                        else Game.Status = 1;
                         key = 0;
                     }
                     else client.Send(Encoding.ASCII.GetBytes(msg + "0"), 0, (msg + "0").Length, SocketFlags.None);
