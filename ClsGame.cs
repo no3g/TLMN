@@ -86,7 +86,9 @@ namespace Server
         public void reset()
         {
             numOfPlayers = 0;
+            CountOf0 = 0;
             arrPlayers = new List<ClsHandCard>();
+            JustPlayCard = new List<ClsCard>();
         }
     }
 }

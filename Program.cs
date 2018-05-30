@@ -10,56 +10,43 @@ using System.IO;
 
 namespace Server
 {
-
-    class Program
+    class BoardGame
     {
-        static ClsGame Game = new ClsGame();
-        static int key = 0;
-        static void Main(string[] args)
+        public ClsGame Game = new ClsGame();
+        private int key = 0;
+        private List<Socket> ListClient = new List<Socket>();
+        public void addClient(Socket client)
         {
-            int port = 8080;
-            Socket ServerListener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            IPEndPoint ep = new IPEndPoint(IPAddress.Any, port);
-            ServerListener.Bind(ep);
-            ServerListener.Listen(100);
-            Console.WriteLine("Listening...");
-            Socket ClientSocket = default(Socket);
-            List<Socket> clients= new List<Socket>();
-            int counter = 0;
-            Program p = new Program();
-            while (counter<2)
-            {
-                ClientSocket = ServerListener.Accept();
-                clients.Add(ClientSocket);
-                //Game.addPlayer();
-                Console.WriteLine(counter + " Client connected");
-                counter++;
-                
-            }
-            
+            ListClient.Add(client);
+        }
+        public void process()
+        {
             while (true)
             {
                 Game.reset();
-                for (int i = 0; i < clients.Count; i++) Game.addPlayer();
+                for (int i = 0; i < ListClient.Count; i++)
+                {
+                    Game.addPlayer();
+                    Game.arrPlayers[i].setRank(ListClient.Count);
+                }
                 Game.deal();
                 Game.playing = Game.rank1;
                 Game.Status = 1;
-                foreach (Socket client in clients)
+                foreach (Socket client in ListClient)
                 {
-                    Thread UserThread = new Thread(() => User(client, clients.IndexOf(client)));
+                    Thread UserThread = new Thread(() => User(client, ListClient.IndexOf(client)));
                     UserThread.Start();
                 }
-                while (Game.Status != -1) {}
-                foreach (Socket client in clients)
+                while (Game.Status != -1) { }
+                foreach (Socket client in ListClient)
                 {
-                    string str = "Rank: " + Game.arrPlayers[clients.IndexOf(client)].getRank().ToString();
+                    string str = "Rank: " + Game.arrPlayers[ListClient.IndexOf(client)].getRank().ToString();
                     client.Send(Encoding.ASCII.GetBytes(str), 0, (str).Length, SocketFlags.None);
                 }
                 Thread.Sleep(10000);
             }
-            
         }
-        static public void User(Socket client, int ID)
+        public void User(Socket client, int ID)
         {
             while (Game.Status != -1)
             {
@@ -67,7 +54,7 @@ namespace Server
                 {
                     key++;
                     while (key < Game.arrPlayers.Count) { }
-                    
+
                     Game.Status = 0;
                     string msg = Game.arrPlayers[ID].getnumOfCard().ToString() + " ";
                     foreach (ClsCard i in Game.arrPlayers[ID].getarrCards())
@@ -104,9 +91,38 @@ namespace Server
                         key = 0;
                     }
                     else client.Send(Encoding.ASCII.GetBytes(msg + "0"), 0, (msg + "0").Length, SocketFlags.None);
+                    Thread.Sleep(500);
                 }
 
             }
+        }
+    }
+    class Program
+    {
+        static ClsGame Game = new ClsGame();
+        static int key = 0;
+        static void Main(string[] args)
+        {
+            int port = 8080;
+            Socket ServerListener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            IPEndPoint ep = new IPEndPoint(IPAddress.Any, port);
+            ServerListener.Bind(ep);
+            ServerListener.Listen(100);
+            Console.WriteLine("Listening...");
+            Socket ClientSocket = default(Socket);
+            List<Socket> clients= new List<Socket>();
+            int counter = 0;
+            BoardGame x = new BoardGame();
+            Program p = new Program();
+            while (counter<2) //chinh so nguoi choi
+            {
+                ClientSocket = ServerListener.Accept();
+                x.addClient(ClientSocket);
+                //Game.addPlayer();
+                Console.WriteLine(counter + " Client connected");
+                counter++;   
+            }
+            x.process();
         }
     }
    

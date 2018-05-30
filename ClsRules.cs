@@ -27,37 +27,37 @@ namespace Server
         }
         public static bool isDouble(List<ClsCard> Card)
         {
-            if (Card.Count < 2) return false;
+            if (Card.Count != 2) return false;
             if (Card[0].getvalue() == Card[1].getvalue()) return true;
             return false;
         }
         public static bool Is3Equal(List<ClsCard> Card)
         {
-            if (Card.Count < 3) return false;
+            if (Card.Count != 3) return false;
             if (Card[0].getvalue() == Card[1].getvalue() && Card[2].getvalue() == Card[1].getvalue()) return true;
             return false;
         }
         public static bool Is4Equal(List<ClsCard> Card)
         {
-            if (Card.Count < 4) return false;
+            if (Card.Count != 4) return false;
             if (Card[0].getvalue() == Card[1].getvalue() && Card[2].getvalue() == Card[1].getvalue() && Card[2].getvalue() == Card[3].getvalue()) return true;
             return false;
         }
         public static bool IsOrder(List<ClsCard> Card)
         {
-            if (Card.Count < 3 || Card[Card.Count - 1].value == 13) return false;
+            if (Card.Count < 3 || Card[Card.Count - 1].value == 12) return false;
             for (int i = 0; i < Card.Count - 1; i++)
                 if (Card[i].getvalue() != Card[i + 1].getvalue() - 1) return false;
             return true;
         }
         public static bool isTrue(List<ClsCard> Card)
         {
-            if (Card.Count == 1 || isDouble(Card) || Is3Equal(Card) || Is4Equal(Card) || IsOrder(Card)) return true;
+            if (Card.Count == 1 || isDouble(Card) || Is3Equal(Card) || Is4Equal(Card) || IsOrder(Card) || IsDoubleOrder(Card) != -1) return true;
             return false;
         }
         public static int IsDoubleOrder(List<ClsCard> Card)
         {
-            if (Card.Count < 6 || Card.Count % 2 == 1 || Card[Card.Count - 1].value == 13) return -1;
+            if (Card.Count < 6 || Card.Count % 2 == 1 || Card[Card.Count - 1].value == 12) return -1;
             for (int i = 0; i < Card.Count / 2 - 2; i++)
                 if (Card[2 * i].getvalue() != Card[2 * i + 2].getvalue() - 1) return -1;
             for (int i = 0; i < Card.Count / 2 - 1; i++)
@@ -71,7 +71,7 @@ namespace Server
             if ((Card1.Count==0)&&(isDouble(Card2)||Is3Equal(Card2)||Is4Equal(Card2)||IsOrder(Card2)||IsDoubleOrder(Card2) != -1)) return true;
             if (isDouble(Card1))
             {
-                if (Card1[0].value == 13 && (Is4Equal(Card2) || IsDoubleOrder(Card2) == 4)) return true;
+                if (Card1[0].value == 12 && (Is4Equal(Card2) || IsDoubleOrder(Card2) == 4)) return true;
                 if (!isDouble(Card2)) return false;
                 if (Card2[1] < Card1[1]) return false;
                 return true;
@@ -84,7 +84,7 @@ namespace Server
             }
             if (Is4Equal(Card1))
             {
-                if (Card1[0].value != 13 && IsDoubleOrder(Card2) == 4) return true;
+                if (Card1[0].value != 12 && IsDoubleOrder(Card2) == 4) return true;
                 if (!Is4Equal(Card2)) return false;
                 if (Card2[3] < Card1[3]) return false;
                 return true;
