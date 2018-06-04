@@ -41,14 +41,21 @@ namespace Server
             int i = (playing + 1) % numOfPlayers;
             while (!arrPlayers[i].getAct())
             {
+                if (JustPlayer == i && arrPlayers[i].getnumOfCard() == 0) break;
                 i = (i + 1) % numOfPlayers;
             }
             playing = i;
             if (JustPlayer == playing)
             {
+                if (arrPlayers[playing].getnumOfCard() == 0)
+                {
+                    arrPlayers[playing].setAct(false);
+                    playing = (playing + 1) % numOfPlayers;
+                }
                 JustPlayer = -1;
                 JustPlayCard = new List<ClsCard>();
-                for (int j = 0; j < numOfPlayers; j++) arrPlayers[j].setAct(true);
+                for (int j = 0; j < numOfPlayers; j++) 
+                    if (arrPlayers[j].getnumOfCard()!=0) arrPlayers[j].setAct(true);
             }
         }
         public bool play(ClsHandCard Player, List<ClsCard> SelectedCard)
@@ -62,6 +69,7 @@ namespace Server
                 Player.setnumOfCard(Player.getnumOfCard() - SelectedCard.Count);
                 if (Player.getnumOfCard() == 0)
                 {
+                    Player.setAct(false);
                     CountOf0++;
                     Player.setRank(CountOf0);
                 }

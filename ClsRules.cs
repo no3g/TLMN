@@ -68,7 +68,7 @@ namespace Server
         {
             sort(Card1);
             sort(Card2);
-            if ((Card1.Count==0)&&(isDouble(Card2)||Is3Equal(Card2)||Is4Equal(Card2)||IsOrder(Card2)||IsDoubleOrder(Card2) != -1)) return true;
+            if ((Card1.Count==0)&&(Card2.Count==1||isDouble(Card2)||Is3Equal(Card2)||Is4Equal(Card2)||IsOrder(Card2)||IsDoubleOrder(Card2) != -1)) return true;
             if (isDouble(Card1))
             {
                 if (Card1[0].value == 12 && (Is4Equal(Card2) || IsDoubleOrder(Card2) == 4)) return true;

@@ -43,6 +43,7 @@ namespace Server
             while (true)
             {
                 numofReady = 0;
+                kReady = new bool[4];
                 int d = 0;                
                 while (numofReady < ListClient.Count || ListClient.Count == 1) 
                 {
@@ -95,6 +96,7 @@ namespace Server
         {
             while (Game.Status != -1)
             {
+                //Console.WriteLine(Game.Status);
                 while (Game.Status == 1)
                 {
                     key++;
@@ -115,9 +117,11 @@ namespace Server
                     for (int i = ID; i < ID + Game.arrPlayers.Count; i++)
                     {
                         if (Game.arrPlayers[i % Game.arrPlayers.Count].getAct()) sAct = sAct + " 1";
+                        else if (Game.arrPlayers[i % Game.arrPlayers.Count].getnumOfCard() == 0) sAct = sAct + " 1"; 
                         else sAct = sAct + " 0";
                     }
                     //Console.WriteLine((Game.playing - ID) % Game.arrPlayers.Count);
+                    
                     if (ID == Game.playing)
                     {
                         bool k = true;
@@ -125,6 +129,7 @@ namespace Server
                         byte[] rev = new byte[1024];
                         int size = client.Receive(rev);
                         string s = Encoding.ASCII.GetString(rev, 0, size);
+                        Console.WriteLine(s);
                         string[] str = s.Split(' ');
                         if (str[0] == "1")
                         {
@@ -143,7 +148,8 @@ namespace Server
                         key = 0;
                     }
                     else client.Send(Encoding.ASCII.GetBytes((msg + ((Game.playing - ID + Game.arrPlayers.Count) % Game.arrPlayers.Count).ToString()) + sAct), 0, (msg + sAct).Length + 1, SocketFlags.None);
-                    Thread.Sleep(500);
+                    //Thread.Sleep(500);
+                    
                 }
 
             }
