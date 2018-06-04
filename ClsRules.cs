@@ -108,6 +108,7 @@ namespace Server
                 if (Card2[7] < Card1[7]) return false;
                 return true;
             }
+            if (Card1.Count == 1 && (Is4Equal(Card2) || IsDoubleOrder(Card2) != -1)) return true;
             if (Card1.Count == 1 && Card2.Count == 1 && isSingleCardWin(Card1[0], Card2[0])) return true;
             return false;
         }

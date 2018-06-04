@@ -31,7 +31,7 @@ namespace Server
             }
             for (int i = 0; i < numOfPlayers; i++)
             {
-                ClsRules.sort(arrPlayers[i].getarrCards());
+                //ClsRules.sort(arrPlayers[i].getarrCards());
                 arrPlayers[i].setnumOfCard(13);
             }
 
